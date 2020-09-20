@@ -1,8 +1,13 @@
 import pygame
 import math
 from queue import PriorityQueue
+import sys
 
-WIDTH = 800;
+# pylint: disable=no-member
+pygame.init()
+
+
+WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 
 RED = (255, 0, 0)
@@ -69,8 +74,19 @@ class Spot:
     def draw(self,win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
-    def update_neighbors(self):
-        pass
+    def update_neighbors(self, grid):
+        self.neighbors = []
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():
+            self.neighbors.append(grid[self.row + 1][self.col])
+        
+        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():
+            self.neighbors.append(grid[self.row - 1][self.col])
+        
+        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():
+            self.neighbors.append(grid[self.row][self.col + 1])
+        
+        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():
+            self.neighbors.append(grid[self.row][self.col - 1])
 
     def __lt__(self,other):
         return False
@@ -117,25 +133,59 @@ def get_clicked(pos, rows, span):
 
 def main(win, span):
     ROWS = 50
-    make_grid(ROWS, span)
+    grid = make_grid(ROWS, span)
 
     start = None
     end = None
+    
     run = True
     started = False
 
     while run:
+        draw(win, grid, ROWS, span) 
         for event in pygame.event.get():
-            if event.type == pygame.quit(): # have to try pygame.cdrom.quit()
+            
+            if event.type == pygame.QUIT: 
                 run = False
             
             if started:
                 continue
             
-            if pygame.mouse.get_pressed()[0]:
+            if pygame.mouse.get_pressed()[0]: # left mouse click
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked(pos, ROWS, span)
+                spot = grid[row][col]
                 
+                if not start:
+                    start = spot
+                    start.make_start()
+                
+                elif not end and spot != start:
+                    end = spot
+                    end.make_end()
+                
+                elif spot != start and spot != end:
+                    spot.make_barrier()
+
             
-            elif pygame.mouse.get_pressed()[2]:
+            elif pygame.mouse.get_pressed()[2]: # right mouse click
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked(pos, ROWS, span)
+                spot = grid[row][col]
+                spot.reset()
+                if spot == start:
+                    start = None
+                elif spot == end:
+                    end = None
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and not started:
+                    pass
+   
+    pygame.quit()       
+    sys.exit()
+
+main(WIN, WIDTH)
 
 
 
