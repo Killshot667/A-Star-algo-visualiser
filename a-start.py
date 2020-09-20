@@ -75,13 +75,71 @@ class Spot:
     def __lt__(self,other):
         return False
     
-def h(a,b):
+def h(a, b):
     x1, y1 = a
     x2, y2 = b
     return abs(x1-x2) + abs(y1-y2)
 
-    
+def make_grid(rows, span):
+    gap = span // rows
+    grid = []
 
+    for i in range(rows):
+        grid.append([])
+        for j in range(rows):
+            spot = Spot(i, j, gap, rows)
+            grid[i].append(spot)
+    
+    return grid
+
+def draw_grid(win, rows, span):
+    gap = span // rows
+    for i in range(rows):
+        pygame.draw.line(win, GREY, (0, i * gap), (span, i * gap))
+        for j in range(rows):
+            pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, span))
+
+def draw(win, grid, rows, span):
+    win.fill(WHITE)
+    for row in grid:
+        for spot in row:
+            spot.draw(win)
+    
+    draw_grid(win, rows, span)
+    pygame.display.update()
+
+def get_clicked(pos, rows, span):
+    gap = span // rows
+    y, x = pos
+    row = y // gap
+    col = x // gap
+    return row, col
+
+def main(win, span):
+    ROWS = 50
+    make_grid(ROWS, span)
+
+    start = None
+    end = None
+    run = True
+    started = False
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.quit(): # have to try pygame.cdrom.quit()
+                run = False
+            
+            if started:
+                continue
+            
+            if pygame.mouse.get_pressed()[0]:
+                
+            
+            elif pygame.mouse.get_pressed()[2]:
+
+
+
+    
     
 
     
