@@ -25,8 +25,8 @@ class Spot:
     def __init__(self, row, col, width, total_rows):
         self.row = row
         self.col = col
-        self.x = col * width
-        self.y = row * width
+        self.x = row * width
+        self.y = col * width
         self.color = WHITE
         self.neighbors = []
         self.width = width
@@ -112,7 +112,7 @@ def algorithm(draw, grid, start, end):
     g_score[start] = 0
     f_score = {spot: float("inf") for row in grid for spot in row}
     f_score[start] = h(start.get_pos(), end.get_pos())
-    open_set_hash = {start}
+    # open_set_hash = {start}
 
     while not open_set.empty():
         for event in pygame.event.get():
@@ -121,7 +121,7 @@ def algorithm(draw, grid, start, end):
         
         current = open_set.get()[2]
         visited.add(current)
-        open_set_hash.remove(current)
+        # open_set_hash.remove(current)
         if current == end:
             reconstruct_path(came_from, end, draw)
             end.make_end()
@@ -135,11 +135,11 @@ def algorithm(draw, grid, start, end):
                     came_from[neighbor] = current
                     g_score[neighbor] = temp_g_score
                     f_score[neighbor] = temp_g_score + h(neighbor.get_pos(), end.get_pos())
-                    if neighbor not in open_set_hash:
-                        count += 1
-                        open_set.put((f_score[neighbor], count, neighbor))
-                        open_set_hash.add(neighbor)
-                        neighbor.make_open()
+                    # if neighbor not in open_set_hash:
+                    count += 1
+                    open_set.put((f_score[neighbor], count, neighbor))
+                    # open_set_hash.add(neighbor)
+                    neighbor.make_open()
         
         draw()
         if current != start:
