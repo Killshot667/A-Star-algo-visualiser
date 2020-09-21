@@ -25,8 +25,8 @@ class Spot:
     def __init__(self, row, col, width, total_rows):
         self.row = row
         self.col = col
-        self.x = row * width
-        self.y = col * width
+        self.x = col * width
+        self.y = row * width
         self.color = WHITE
         self.neighbors = []
         self.width = width
@@ -144,6 +144,7 @@ def algorithm(draw, grid, start, end):
         draw()
         if current != start:
             current.make_closed()
+        draw()
     
     return False
 
